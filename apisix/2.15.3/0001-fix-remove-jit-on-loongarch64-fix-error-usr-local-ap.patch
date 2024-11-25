@@ -1,0 +1,43 @@
+From 06fcf9b0e166a17960ea1792e17556e5504810c1 Mon Sep 17 00:00:00 2001
+From: ZuoBro <zuobro@163.com>
+Date: Fri, 22 Nov 2024 15:13:23 +0800
+Subject: [PATCH] =?UTF-8?q?fix:=20remove=20jit=20on=20loongarch64=EF=BC=8C?=
+ =?UTF-8?q?fix=20error:=20/usr/local/apisix/apisix/init.lua:21:=20pcre=20j?=
+ =?UTF-8?q?it=20stack=20allocation=20failed?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ apisix/init.lua | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
+
+diff --git a/apisix/init.lua b/apisix/init.lua
+index 388af426..39744287 100644
+--- a/apisix/init.lua
++++ b/apisix/init.lua
+@@ -17,13 +17,14 @@
+ local require         = require
+ -- set the JIT options before any code, to prevent error "changing jit stack size is not
+ -- allowed when some regexs have already been compiled and cached"
+-if require("ffi").os == "Linux" then
+-    require("ngx.re").opt("jit_stack_size", 200 * 1024)
+-end
+-
+-require("jit.opt").start("minstitch=2", "maxtrace=4000",
+-                         "maxrecord=8000", "sizemcode=64",
+-                         "maxmcode=4000", "maxirconst=1000")
++-- !remove jit on loongarch64!
++--if require("ffi").os == "Linux" then
++--    require("ngx.re").opt("jit_stack_size", 200 * 1024)
++--end
++
++--require("jit.opt").start("minstitch=2", "maxtrace=4000",
++--                         "maxrecord=8000", "sizemcode=64",
++--                         "maxmcode=4000", "maxirconst=1000")
+ 
+ require("apisix.patch").patch()
+ local core            = require("apisix.core")
+-- 
+2.33.0.windows.2
+
